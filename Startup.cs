@@ -52,6 +52,7 @@ namespace Peliculas
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
+            //Configuramos el Filtro para JWT
             app.UseJwtBearerAuthentication(new JwtBearerOptions()
             {
                 Audience = "Public",
@@ -62,6 +63,7 @@ namespace Peliculas
                     ValidateIssuer = true,
                     ValidIssuer = "PeliculasAPI",
                     ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.GetSection("AuthenticationSettings:SigningKey").Value))
                 }
             });
