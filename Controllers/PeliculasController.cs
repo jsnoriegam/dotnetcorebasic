@@ -1,10 +1,13 @@
 using System.Collections.Generic;
+using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Peliculas.Entities;
 using Peliculas.Services;
 
 namespace Peliculas.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class PeliculasController : Controller
     {
@@ -37,7 +40,10 @@ namespace Peliculas.Controllers
             }
             else
             {
-                return StatusCode(409, ModelState);
+                return StatusCode(409, ModelState.ToDictionary(
+                    ma => ma.Key,
+                    ma => ma.Value.Errors.Select(e => e.ErrorMessage).ToList()
+                ));
             }
         }
 
@@ -51,11 +57,15 @@ namespace Peliculas.Controllers
             }
             else
             {
-                return StatusCode(409, ModelState);
+                return StatusCode(409, ModelState.ToDictionary(
+                    ma => ma.Key,
+                    ma => ma.Value.Errors.Select(e => e.ErrorMessage).ToList()
+                ));
             }
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "ADMIN")]
         public IActionResult Delete([FromRoute] int id)
         {
             PeliculasService.Eliminar(id);
