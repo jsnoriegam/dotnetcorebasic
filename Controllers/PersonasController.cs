@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Peliculas.Entities;
@@ -37,7 +38,10 @@ namespace Peliculas.Controllers
             }
             else
             {
-                return StatusCode(409, ModelState);
+                return StatusCode(409, ModelState.ToDictionary(
+                    ma => ma.Key,
+                    ma => ma.Value.Errors.Select(e => e.ErrorMessage).ToList()
+                ));
             }
         }
 
@@ -51,7 +55,10 @@ namespace Peliculas.Controllers
             }
             else
             {
-                return StatusCode(409, ModelState);
+                return StatusCode(409, ModelState.ToDictionary(
+                    ma => ma.Key,
+                    ma => ma.Value.Errors.Select(e => e.ErrorMessage).ToList()
+                ));
             }
         }
 

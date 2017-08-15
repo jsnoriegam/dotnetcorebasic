@@ -8,8 +8,10 @@ namespace Peliculas.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+        [Required]
         [MaxLength(256)]
         public string Nombre { get; set; }
+        [Required]
         [MaxLength(256)]
         public string Apellido { get; set; }
         [NotMapped]

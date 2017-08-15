@@ -4,11 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using Peliculas.Services;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Peliculas
 {
@@ -31,11 +34,13 @@ namespace Peliculas
         {
             var connectionString = Configuration.GetConnectionString("MySql");
             // Add framework services.
-            services.AddDbContext<PeliculasContext>(options => 
+            services.AddDbContext<PeliculasContext>(options =>
                 options.UseMySql(connectionString)
             );
+            services.Configure<AuthOptions>(Configuration.GetSection("AuthenticationSettings"));
             //Se deben especificar los servicios inyectables
             //Dependiendo del caso se puede utilizar AddSingleton o AddTransient
+            services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IPeliculasService, PeliculasService>();
             services.AddScoped<IPersonasService, PersonasService>();
             services.AddMvc();
@@ -46,6 +51,22 @@ namespace Peliculas
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+
+            //Configuramos el Filtro para JWT
+            app.UseJwtBearerAuthentication(new JwtBearerOptions()
+            {
+                Audience = "Public",
+                AutomaticChallenge = true,
+                AutomaticAuthenticate = true,
+                TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = "PeliculasAPI",
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.GetSection("AuthenticationSettings:SigningKey").Value))
+                }
+            });
 
             app.UseMvc();
         }
