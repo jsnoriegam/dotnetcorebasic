@@ -37,9 +37,20 @@ namespace Peliculas
             services.AddDbContext<PeliculasContext>(options =>
                 options.UseMySql(connectionString)
             );
+
+            // Establecemos las politicas de CORS en la API
+            // Referencia: https://developer.mozilla.org/es/docs/Web/HTTP/Access_control_CORS
+            services.AddCors(options => {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials());
+            });
+
             services.Configure<AuthOptions>(Configuration.GetSection("AuthenticationSettings"));
-            //Se deben especificar los servicios inyectables
-            //Dependiendo del caso se puede utilizar AddSingleton o AddTransient
+            // Se deben especificar los servicios inyectables
+            // Dependiendo del caso se puede utilizar AddSingleton o AddTransient
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IPeliculasService, PeliculasService>();
             services.AddScoped<IPersonasService, PersonasService>();
@@ -52,7 +63,9 @@ namespace Peliculas
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
 
-            //Configuramos el Filtro para JWT
+            app.UseCors("CorsPolicy");
+
+            // Configuramos el Filtro para JWT
             app.UseJwtBearerAuthentication(new JwtBearerOptions()
             {
                 Audience = "Public",

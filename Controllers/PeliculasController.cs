@@ -65,6 +65,7 @@ namespace Peliculas.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "ADMIN")]
         public IActionResult Delete([FromRoute] int id)
         {
             PeliculasService.Eliminar(id);

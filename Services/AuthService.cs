@@ -10,15 +10,17 @@ namespace Peliculas.Services
 {
     public class AuthService : IAuthService
     {
+        private static readonly string roles = "roles";
         AuthOptions Options;
 
         public AuthService(IOptions<AuthOptions> options)
         {
             Options = options.Value;
         }
+        // Utilice su propia lógica de validación de usuarios
         public bool ValidateUser(string username, string password)
         {
-            return true;
+            return username.Equals("admin") && password.Equals("admin");
         }
         public string GenerateAccessToken(DateTime now, string username, TimeSpan validtime)
         {
@@ -33,8 +35,12 @@ namespace Peliculas.Services
                         ClaimValueTypes.Integer64
                     ),
                     new Claim(
-                        "roles",
+                        roles,
                         "ADMIN"
+                    ),
+                    new Claim(
+                        roles,
+                        "SUPERUSUARIO"
                     )
             };
             var signingCredentials = new Microsoft.IdentityModel.Tokens.SigningCredentials(
