@@ -6,7 +6,7 @@ using Peliculas.Services;
 
 namespace Peliculas.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     public class PersonasController : Controller
     {
         IPersonasService PersonasService;
@@ -14,10 +14,25 @@ namespace Peliculas.Controllers
         {
             PersonasService = personasService;
         }
+
+        [HttpGet("{id}")]
+        public IActionResult Get([FromRoute] int id)
+        {
+            PersonaWrapperView pelicula = PersonasService.Obtener(id);
+            if (pelicula != null)
+            {
+                return Ok(pelicula);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
         [HttpGet]
         public IActionResult Get()
         {
-            List<Persona> personas = PersonasService.ObtenerListado();
+            List<PersonaWrapperView> personas = PersonasService.ObtenerListado();
             if (personas != null && personas.Count > 0)
             {
                 return Ok(personas);

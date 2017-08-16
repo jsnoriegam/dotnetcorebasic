@@ -10,7 +10,7 @@ using Peliculas.Services;
 
 namespace Peliculas.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     public class AuthController : Controller
     {
         IAuthService AuthService;
