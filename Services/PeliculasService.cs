@@ -14,10 +14,14 @@ namespace Peliculas.Services
             Context = context;
         }
 
-        public List<PeliculaParentView> ObtenerListado()
+        public PeliculaWrapperView Obtener(int id) {
+            return new PeliculaWrapperView(Context.Peliculas.Include(p => p.Director).First(p => p.Id == id));
+        }
+        public List<PeliculaWrapperView> ObtenerListado()
         {
             //Es necesario referenciar System.Linq
-            return Context.Peliculas.AsNoTracking().Include(p => p.Director).Select(p => new PeliculaParentView(p)).ToList();
+            //Include p.Director genera internamete un JOIN en la consulta
+            return Context.Peliculas.AsNoTracking().Include(p => p.Director).Select(p => new PeliculaWrapperView(p)).ToList();
         }
 
         public void Agregar(Pelicula pelicula)
@@ -43,7 +47,8 @@ namespace Peliculas.Services
 
     public interface IPeliculasService
     {
-        List<PeliculaParentView> ObtenerListado();
+        PeliculaWrapperView Obtener(int id);
+        List<PeliculaWrapperView> ObtenerListado();
         void Agregar(Pelicula pelicula);
         void Modificar(int id, Pelicula pelicula);
         void Eliminar(int id);

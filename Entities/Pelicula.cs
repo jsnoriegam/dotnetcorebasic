@@ -19,12 +19,14 @@ namespace Peliculas.Entities
         public Persona Director { get; set; }
         public int? DirectorId { get; set; }
     }
-
+    // Es necesario crear clases tipo wrapper para formatear los datos que se envian internamente al
+    // Serializador JSON
+    // Se utiliza [NotMapped] para evitar que la clase sea incluida como una entidad y afecte la BD
     [NotMapped]
-    public class PeliculaParentView
+    public class PeliculaWrapperView
     {
         protected Pelicula Pelicula;
-        public PeliculaParentView(Pelicula pelicula)
+        public PeliculaWrapperView(Pelicula pelicula)
         {
             Pelicula = pelicula;
         }
@@ -32,7 +34,21 @@ namespace Peliculas.Entities
         public int Id { get => Pelicula.Id; }
         public string Nombre { get => Pelicula.Nombre; }
         public string CodigoIMDB { get => Pelicula.CodigoIMDB; }
-        public string Resumen { get => Pelicula.CodigoIMDB; }
-        public Persona Director { get => Pelicula.Director; }
+        public string Resumen { get => Pelicula.Resumen; }
+        public PersonaWrapperPeliculaView Director { get => new PersonaWrapperPeliculaView(Pelicula.Director); }
+    }
+    [NotMapped]
+    public class PeliculaWrapperPersonaView
+    {
+        protected Pelicula Pelicula;
+        public PeliculaWrapperPersonaView(Pelicula pelicula)
+        {
+            Pelicula = pelicula;
+        }
+
+        public int Id { get => Pelicula.Id; }
+        public string Nombre { get => Pelicula.Nombre; }
+        public string CodigoIMDB { get => Pelicula.CodigoIMDB; }
+        public string Resumen { get => Pelicula.Resumen; }
     }
 }

@@ -8,7 +8,7 @@ using Peliculas.Services;
 namespace Peliculas.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     public class PeliculasController : Controller
     {
         IPeliculasService PeliculasService;
@@ -16,10 +16,25 @@ namespace Peliculas.Controllers
         {
             PeliculasService = peliculasService;
         }
+        
+        [HttpGet("{id}")]
+        public IActionResult Get([FromRoute] int id)
+        {
+            PeliculaWrapperView pelicula = PeliculasService.Obtener(id);
+            if (pelicula != null)
+            {
+                return Ok(pelicula);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
         [HttpGet]
         public IActionResult Get()
         {
-            List<PeliculaParentView> peliculas = PeliculasService.ObtenerListado();
+            List<PeliculaWrapperView> peliculas = PeliculasService.ObtenerListado();
             if (peliculas != null && peliculas.Count > 0)
             {
                 return Ok(peliculas);
@@ -40,6 +55,8 @@ namespace Peliculas.Controllers
             }
             else
             {
+                // Utilizo ToDictionary para obtener solo los datos relevantes del ModelState
+                // Para usar ToDictionary se requere System.Linq
                 return StatusCode(409, ModelState.ToDictionary(
                     ma => ma.Key,
                     ma => ma.Value.Errors.Select(e => e.ErrorMessage).ToList()
