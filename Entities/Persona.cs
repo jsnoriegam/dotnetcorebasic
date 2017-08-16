@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -18,5 +20,30 @@ namespace Peliculas.Entities
         public string NombreCompleto => $"{Nombre} {Apellido}";
         [MaxLength(32)]
         public string CodigoIMDB { get; set; }
+        [InverseProperty("Director")]
+        public ICollection<Pelicula> Peliculas { get; set; }
+    }
+    [NotMapped]
+    public class PersonaWrapperView {
+        Persona Persona;
+        public PersonaWrapperView(Persona persona)
+        {
+            Persona = persona;
+        }
+        public int Id { get => Persona.Id; }
+        public string NombreCompleto { get => Persona.NombreCompleto; }
+        public string CodigoIMDB { get => Persona.CodigoIMDB; }
+        public ICollection<PeliculaWrapperPersonaView> peliculas { get => Persona.Peliculas.Select(p => new PeliculaWrapperPersonaView(p)).ToList(); }
+    }
+    [NotMapped]
+    public class PersonaWrapperPeliculaView {
+        Persona Persona;
+        public PersonaWrapperPeliculaView(Persona persona)
+        {
+            Persona = persona;
+        }
+        public int Id { get => Persona.Id; }
+        public string NombreCompleto { get => Persona.NombreCompleto; }
+        public string CodigoIMDB { get => Persona.CodigoIMDB; }
     }
 }

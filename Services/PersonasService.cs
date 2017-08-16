@@ -14,10 +14,14 @@ namespace Peliculas.Services
             Context = context;
         }
 
-        public List<Persona> ObtenerListado()
+        public PersonaWrapperView Obtener(int id) {
+            return new PersonaWrapperView(Context.Personas.Include(p => p.Peliculas).First(p => p.Id == id));
+        }
+
+        public List<PersonaWrapperView> ObtenerListado()
         {
             //Es necesario referenciar System.Linq
-            return Context.Personas.ToList();
+            return Context.Personas.AsNoTracking().Include(p => p.Peliculas).Select(p => new PersonaWrapperView(p)).ToList();
         }
 
         public void Agregar(Persona persona)
@@ -43,7 +47,8 @@ namespace Peliculas.Services
 
     public interface IPersonasService
     {
-        List<Persona> ObtenerListado();
+        PersonaWrapperView Obtener(int id);
+        List<PersonaWrapperView> ObtenerListado();
         void Agregar(Persona persona);
         void Modificar(int id, Persona persona);
         void Eliminar(int id);

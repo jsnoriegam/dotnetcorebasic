@@ -12,7 +12,7 @@ namespace Peliculas
         {
             //Database.EnsureCreated();//Crea la BD y las tablas según el esquema actual
             //(No actualiza!!)
-            Database.Migrate(); //Ejecuta cualquier migración que este pendiente
+            //Database.Migrate(); //Ejecuta cualquier migración que este pendiente
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
