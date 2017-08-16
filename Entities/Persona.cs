@@ -21,7 +21,7 @@ namespace Peliculas.Entities
         [MaxLength(32)]
         public string CodigoIMDB { get; set; }
         [InverseProperty("Director")]
-        public ICollection<Pelicula> Peliculas { get; set; }
+        public ICollection<Pelicula> DirectorDe { get; set; }
     }
     [NotMapped]
     public class PersonaWrapperView {
@@ -33,7 +33,7 @@ namespace Peliculas.Entities
         public int Id { get => Persona.Id; }
         public string NombreCompleto { get => Persona.NombreCompleto; }
         public string CodigoIMDB { get => Persona.CodigoIMDB; }
-        public ICollection<PeliculaWrapperPersonaView> peliculas { get => Persona.Peliculas.Select(p => new PeliculaWrapperPersonaView(p)).ToList(); }
+        public ICollection<PeliculaWrapperPersonaView> DirectorDe { get => Persona.DirectorDe.Select(p => new PeliculaWrapperPersonaView(p)).ToList(); }
     }
     [NotMapped]
     public class PersonaWrapperPeliculaView {
