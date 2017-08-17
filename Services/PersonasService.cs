@@ -15,13 +15,13 @@ namespace Peliculas.Services
         }
 
         public PersonaWrapperView Obtener(int id) {
-            return new PersonaWrapperView(Context.Personas.Include(p => p.Peliculas).First(p => p.Id == id));
+            return new PersonaWrapperView(Context.Personas.Include(p => p.DirectorDe).First(p => p.Id == id));
         }
 
         public List<PersonaWrapperView> ObtenerListado()
         {
             //Es necesario referenciar System.Linq
-            return Context.Personas.AsNoTracking().Include(p => p.Peliculas).Select(p => new PersonaWrapperView(p)).ToList();
+            return Context.Personas.AsNoTracking().Include(p => p.DirectorDe).Select(p => new PersonaWrapperView(p)).ToList();
         }
 
         public void Agregar(Persona persona)
