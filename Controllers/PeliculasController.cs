@@ -16,7 +16,11 @@ namespace Peliculas.Controllers
         {
             PeliculasService = peliculasService;
         }
-        
+
+        /// <summary>
+        /// Obtener una película
+        /// </summary>
+        /// <param name="id">Database Id de la película solicitada</param>
         [HttpGet("{id}")]
         public IActionResult Get([FromRoute] int id)
         {
@@ -31,6 +35,9 @@ namespace Peliculas.Controllers
             }
         }
 
+        /// <summary>
+        /// Obtener listado de películas
+        /// </summary>
         [HttpGet]
         public IActionResult Get()
         {
@@ -45,6 +52,9 @@ namespace Peliculas.Controllers
             }
         }
 
+        /// <summary>
+        /// Ingresar una película
+        /// </summary>
         [HttpPost]
         public IActionResult Post([FromBody] Pelicula pelicula)
         {
@@ -64,6 +74,9 @@ namespace Peliculas.Controllers
             }
         }
 
+        /// <summary>
+        /// Modificar una película
+        /// </summary>
         [HttpPut("{id}")]
         public IActionResult Put([FromRoute] int id, [FromBody] Pelicula pelicula)
         {
@@ -81,6 +94,9 @@ namespace Peliculas.Controllers
             }
         }
 
+        /// <summary>
+        /// Eliminar una película
+        /// </summary>
         [HttpDelete("{id}")]
         [Authorize(Roles = "ADMIN")]
         public IActionResult Delete([FromRoute] int id)

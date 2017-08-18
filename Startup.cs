@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Peliculas.Services;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace Peliculas
 {
@@ -54,6 +55,11 @@ namespace Peliculas
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IPeliculasService, PeliculasService>();
             services.AddScoped<IPersonasService, PersonasService>();
+            
+            services.AddSwaggerGen(c => {
+                c.SwaggerDoc("v1", new Info { Title = "Películas API", Version = "v1" });
+                c.IncludeXmlComments(GetXmlCommentsPath());
+            });
             services.AddMvc();
         }
 
@@ -81,7 +87,17 @@ namespace Peliculas
                 }
             });
 
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Películas API V1");
+            });
+
             app.UseMvc();
+        }
+        private string GetXmlCommentsPath()
+        {
+            return string.Format(@"{0}\Peliculas.xml", System.AppContext.BaseDirectory);
         }
     }
 }
